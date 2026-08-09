@@ -10,6 +10,28 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/
+      - postgres_data:/var/lib/postgresql
+    networks:
+      - weather-network
+    healthcheck: # Added health check
+      test: ["CMD-SHELL", "pg_isready -U myuser -d weatherplatform"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  db_service:
+    build: ./database
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/weatherplatform
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - weather-network
 volumes:
   postgres_data:
+
+networks:
+  weather-network:
+    driver: bridge
