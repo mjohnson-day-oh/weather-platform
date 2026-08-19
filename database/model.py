@@ -1,23 +1,31 @@
 import os
-from decimal import Decimal
 from datetime import datetime
-from sqlalchemy import create_engine, func, String, Boolean, Numeric, ForeignKey, Float, DateTime
-from sqlalchemy.orm import DeclarativeBase, sessionmaker, Mapped, mapped_column, relationship
-from pydantic import BaseModel
+from decimal import Decimal
+
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    Float,
+    ForeignKey,
+    Numeric,
+    String,
+    func,
+)
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship,
+)
+
+from database.database import Base
 
 DB_USER = os.getenv("POSTGRES_USER", "myuser")
 DB_PASSWORD = os.getenv("POSTGRES_PASSWORD", "mypassword")
 DB_NAME = os.getenv("POSTGRES_DB", "weatherplatform")
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@db:5432/{DB_NAME}" #postgresql://myuser:mypassword@db:5432/weatherplatform
 
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-class Base(DeclarativeBase):
-    pass
-
 class Locations(Base):
-    __tablename__ = 'locations'
+    __tablename__: str = 'locations'
     id: Mapped[int] = mapped_column(primary_key=True)
     city: Mapped[str] = mapped_column(String(50), unique=True)
     state: Mapped[str] = mapped_column(String(50))
@@ -27,7 +35,7 @@ class Locations(Base):
     timezone: Mapped[str] = mapped_column(String(50))
 
 class WeatherObservations(Base):
-    __tablename__ = 'weatherobervations'
+    __tablename__: str = 'weatherobervations'
     id: Mapped[int] = mapped_column(primary_key=True)
     observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     teperature: Mapped[float] = mapped_column(Float)
@@ -41,14 +49,14 @@ class WeatherObservations(Base):
     location: Mapped[Locations] = relationship(back_populates="weatherobervations")
 
 class Users(Base):
-    __tablename__ = 'users'
+    __tablename__: str = 'users'
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(50))
     password_hash: Mapped[str] = mapped_column(String(50))
     created_at: Mapped[datetime] = mapped_column(String(50))
 
 class Alerts(Base):
-    __tablename__ = 'alerts'
+    __tablename__: str = 'alerts'
     id: Mapped[int] = mapped_column(primary_key=True)
     metric: Mapped[str] = mapped_column(String(50))
     operator: Mapped[str] = mapped_column(String(50))
@@ -58,4 +66,3 @@ class Alerts(Base):
     user: Mapped[Users] = relationship(back_populates="alerts")
     location_id: Mapped[int] = mapped_column(ForeignKey("locations.id", ondelete="CASCADE"))
     location: Mapped[Locations] = relationship(back_populates="alerts")
-
