@@ -8,14 +8,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+COPY database/requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
-
-COPY alembic.ini .
-COPY alembic/ ./alembic/
-COPY . .
+COPY database/app ./app
+COPY database/alembic/ ./alembic
+COPY database/alembic.ini .
+COPY database/entrypoint.sh .
+RUN chmod +x entrypoint.sh
+COPY common ./common
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
+CMD ["./entrypoint.sh"]

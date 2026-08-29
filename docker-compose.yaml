@@ -19,7 +19,9 @@ services:
       timeout: 5s
       retries: 5
   db_service:
-    build: ./database
+    build:
+      context: .
+      dockerfile: database/Dockerfile
     ports:
       - "8000:8000"
     environment:

@@ -9,8 +9,7 @@ DB_NAME = os.getenv("POSTGRES_DB", "weatherplatform")
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@db:5432/{DB_NAME}"
 
 engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False},
+    DATABASE_URL
 )
 
 SessionLocal = sessionmaker(bind=engine)

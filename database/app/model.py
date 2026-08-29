@@ -17,7 +17,7 @@ from sqlalchemy.orm import (
     relationship,
 )
 
-from database.database import Base
+from app.database import Base
 
 DB_USER = os.getenv("POSTGRES_USER", "myuser")
 DB_PASSWORD = os.getenv("POSTGRES_PASSWORD", "mypassword")
@@ -31,7 +31,7 @@ class Locations(Base):
     state: Mapped[str] = mapped_column(String(50))
     country: Mapped[str] = mapped_column(String(50))
     latitude: Mapped[Decimal] = mapped_column(Numeric(precision=4, scale=2))
-    longetude: Mapped[Decimal] = mapped_column(Numeric(precision=4, scale=2))
+    longitude: Mapped[Decimal] = mapped_column(Numeric(precision=4, scale=2))
     timezone: Mapped[str] = mapped_column(String(50))
 
 class WeatherObservations(Base):
