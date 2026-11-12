@@ -48,6 +48,22 @@ def main() -> None:
                     Locations.timezone == timezone,
                 ).limit(1)
             )
+            if existing_id is not None:
+                continue
+
+            session.add(
+                Locations(
+                    city=city,
+                    latitude=latitude,
+                    longitude=longitude,
+                    timezone=timezone,
+                )
+            )
+            inserted+=1
+    print(f"Inserted {inserted} locations(s).")
+
+if __name__ == "__main__":
+    main()
 # def main():
 #     dayton_location = {
 #         "city": "Dayton",
